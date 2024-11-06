@@ -51,8 +51,50 @@ public class App
         }
     }
 
+    //provider
+    private static class Provider extends Thread{
+        @Override
+        public void run(){
+            while (true){
+                provide();
+                try{
+                    Thread.sleep(1000);
+                } catch (InterruptedException e){
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
+
+    //Consumer
+    private static class Consumer extends Thread{
+        @Override
+        public void run(){
+            while (true){
+                consume();
+                try{
+                    Thread.sleep(1000);
+                } catch (InterruptedException e){
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception 
     {
         System.out.println("Hello, World!");
+        Thread providerThread = new Provider();
+        Thread consumerThread = new Consumer();
+
+        providerThread.start();
+        consumerThread.start();
+
+        try{
+            providerThread.join();
+            consumerThread.join();
+        } catch (InterruptedException e){
+            Thread.currentThread().interrupt();
+        }
     }
 }
